@@ -78,7 +78,11 @@ namespace AsmResolver.PE.DotNet.StrongName
                         (uint) _imageStream.Position,
                         (uint) (_imageStream.Position + chunkLength));
 
+#if NET9_0_OR_GREATER
+                    _imageStream.ReadExactly(buffer, 0, chunkLength);
+#else
                     _imageStream.Read(buffer, 0, chunkLength);
+#endif
 
                     ZeroRangesIfApplicable(buffer, currentRange);
                     algorithm.TransformBlock(buffer, 0, chunkLength, buffer, 0);
